@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+	<!-- <import resource="jasper-views.xml"/> -->
+
+	<context:annotation-config />
+	<context:component-scan
+		base-package="application.com.*" />
+	<mvc:annotation-driven />
+
+	<bean id="datasource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="org.postgresql.Driver" />
+		<property name="url"
+			value="jdbc:postgresql://localhost:5432/postgres" />
+		<property name="username" value="postgres" />
+		<property name="password" value="1234" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="datasource" />
+		<property name="packagesToScan" value="application.com.entities" />
+		<!--<property name="annotatedClasses">-->
+			<!--<list>-->
+				<!--<value>Teacher</value>-->
+				<!--<value>Student</value>-->
+				<!--<value>Assignment</value>-->
+				<!--<value>CADClass</value>-->
+				<!--<value>UserPreference</value>-->
+				<!--<value>LookUp</value>-->
+				<!--<value>ClassRegistry</value>-->
+				<!--<value>StudentAssignments</value>-->
+				<!--<value>Roles</value>-->
+				<!--<value>RoleActions</value>-->
+				<!--<value>Actions</value>-->
+				<!--<value>DataFiles</value>-->
+				<!--<value>UserRole</value>-->
+				<!--<value>SubscriptionPlans</value>-->
+				<!--<value>SubscriptionHistory</value>-->
+				<!--<value>SpecialDesignation</value>-->
+				<!--<value>Audit</value>-->
+				<!--<value>FrequentlyAskedQuestions</value>-->
+				<!--<value>Subscription</value>-->
+				<!--<value>Pricing</value>-->
+			<!--</list>-->
+		<!--</property>-->
+ 		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="hibernateTransactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven
+		transaction-manager="hibernateTransactionManager" />
+
+	<bean name="bCryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<bean id="multipartResolver"
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="manojroyalsharma@gmail.com" />
+		<property name="password" value="gagigagi" />
+		<property name="protocol"><value>smtp</value></property>
+
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.from.email">manojroyalsharma@gmail.com</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!-- <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" 
+		p:location="{/resources/rms.properties}" /> -->
+
+</beans>
